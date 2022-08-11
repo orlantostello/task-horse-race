@@ -1,42 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import ListOfHorsePositions from "./components/ListOfHorsePositions/ListOfHorsePositions";
-// import PositionHorse from "./components/PositionHorse/PositionHorse";
+import Container from "./components/Container/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { raceData } from "./redux/horsesSlice";
+
 import socket from "./socket";
+import AlertWiner from "./components/AlertWiner/AlertWiner";
 
 function App() {
-  const [datahorse, setDatahorse] = useState([]);
+  const [refreschBtn, setRefreshBtn] = useState(false);
+
+  const dispatch = useDispatch();
+  const datahorse = useSelector((state) => state.horses.horses);
 
   function getRaceData(response) {
     const res = Array.isArray(response) ? response : [response];
-    const data = res.map((item) => JSON.stringify(item)).join("\n");
-    console.log(data);
-    setDatahorse(data);
+
+    dispatch(raceData(res));
   }
 
   function startRace() {
     socket.emit("start");
-
     socket.on("ticker", getRaceData);
   }
 
-  function endRace() {
-    socket.removeAllListeners();
-    setDatahorse([]);
-  }
+  useEffect(() => {
+    socket.emit("start");
+    socket.on("ticker", getRaceData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    datahorse.every(({ distance }) => distance >= 1000)
+      ? setRefreshBtn(true)
+      : setRefreshBtn(false);
+  }, [datahorse]);
 
   return (
-    <div className="App">
-      <h1>Hello</h1>
-      <button type="button" onClick={startRace}>
-        start
-      </button>
-      <button type="button" onClick={endRace}>
-        end
-      </button>
-      <ListOfHorsePositions datahorse={datahorse} />
-      {/* <PositionHorse /> */}
-    </div>
+    <Container>
+      <div className="App">
+        <div className="block">
+          <div className="btnContainer">
+            {refreschBtn && (
+              <button className="btn" type="button" onClick={startRace}>
+                Start
+              </button>
+            )}
+          </div>
+
+          <AlertWiner />
+        </div>
+
+        <ListOfHorsePositions />
+      </div>
+    </Container>
   );
 }
 

@@ -1,16 +1,19 @@
 import React from "react";
 import PositionHorse from "../PositionHorse/PositionHorse";
 import s from "./ListOfHorsePositions.module.css";
+import { useSelector } from "react-redux";
 
-const ListOfHorsePositions = ({ datahorse }) => {
+const ListOfHorsePositions = () => {
+  const datahorse = useSelector((state) => state.horses.horses);
   return (
     <div className={s.container}>
-      <div className={s.block}>
-        {/* {datahorse.map(({ name, distance }) => (
-        <PositionHorse />
-      ))} */}
-        <PositionHorse />
-      </div>
+      <ul className={s.block}>
+        {datahorse.map(({ name, distance }) => (
+          <li key={name}>
+            <PositionHorse name={name} distance={distance} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
