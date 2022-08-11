@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "expres": "^0.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -22,7 +23,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
+    "pusk": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test"
   },
@@ -32,7 +34,7 @@
       "react-app/jest"
     ]
   },
-  "proxy": "http://localhost:3002",
+  "proxy": "https://thawing-earth-13216.herokuapp.com/",
   "browserslist": {
     "production": [
       ">0.2%",
